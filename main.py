@@ -1,6 +1,9 @@
 import requests
 import json
+import pickle
+import time
 from config import BaseConfig
+from analysis import Analysis
 
 
 def construct_request_url(account_id, included_account_id):
@@ -36,10 +39,37 @@ def get_match_ids(url):
     return res
 
 
+def get_matches_detail(match_ids):
+    """
+    :param match_ids: list of match ids
+    :return: matches detail json list
+    """
+    res = []
+    for match_id in match_ids:
+        url = 'https://api.opendota.com/api/matches/%s' % str(match_id)
+        r = requests.get(url)
+        r_str = r.content.decode()
+        r_json = json.loads(r_str)
+        res.append(r_json)
+        print("players" in r_json)
+        time.sleep(1)
+    pickle.dump(res, open("match_details.pkl", "wb"))
+    return res
+
+
 if __name__ == '__main__':
     config = BaseConfig()
-    request_url = construct_request_url(config.account_id,
-                                        config.included_account_id)
-    print(request_url)
-    match_ids = get_match_ids(request_url)
-    print(len(match_ids))
+    analysis = Analysis()
+    # request_url = construct_request_url(config.account_id,
+    #                                    config.included_account_id)
+    # print(request_url)
+    # match_ids = get_match_ids(request_url)
+    # print(len(match_ids))
+    # match_detail = get_matches_detail(match_ids)
+    match_detail = pickle.load(open("match_details.pkl", "rb"))
+    accounts = [config.account_id] + config.included_account_id
+    stat = analysis.hero_odds(accounts, match_detail, verbose=True)
+    total_odds = analysis.total_odds(config.account_id, match_detail, verbose=True)
+
+
+

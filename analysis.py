@@ -19,7 +19,7 @@ class Analysis:
                 if player["account_id"] == account_id:
                     if player["win"]:
                         win += 1
-        ret = {"win": win, "lose": length - win, "win_rate": win / length}
+        ret = {"total": length, "win": win, "lose": length - win, "win_rate": win / length}
         if verbose:
             print(ret)
         return ret
@@ -62,7 +62,8 @@ class Analysis:
             for username, datas in stat.items():
                 print("username", username)
                 for hero, info in datas.items():
-                    print(hero, info)
+                    print("\t", hero, info)
+                print("------------------------------------------")
 
         return stat
 

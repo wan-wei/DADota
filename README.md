@@ -1,2 +1,2 @@
 # DADota
-Data analysis on interesting aspects of Data2
+Data analysis on interesting aspects of Dota2
